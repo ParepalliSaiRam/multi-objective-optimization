@@ -19,13 +19,13 @@ class NSGA2:
         population_size,
         generations,
         number_of_variables,
+        objective_function,
         lower_bounds,
         upper_bounds,
-        objective_function,
-        crossover_probability=0.9,
-        mutation_probability=None,
-        eta_c=15,
-        eta_m=20
+        crossover_probability,
+        mutation_probability,
+        eta_c,
+        eta_m
     ):
 
         self.population_size = population_size

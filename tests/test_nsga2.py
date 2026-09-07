@@ -11,7 +11,7 @@ class TestNSGA2(unittest.TestCase):
 
     def test_nsga2_runs(self):
 
-        number_of_variables = 10
+        number_of_variables = 30
 
         lower_bounds, upper_bounds = zdt1_bounds(
             number_of_variables
@@ -19,11 +19,15 @@ class TestNSGA2(unittest.TestCase):
 
         algorithm = NSGA2(
             population_size=20,
-            generations=10,
-            number_of_variables=number_of_variables,
-            lower_bounds=lower_bounds,
-            upper_bounds=upper_bounds,
-            objective_function=zdt1
+            generations=5,
+            number_of_variables=30,
+            objective_function=zdt1,
+            lower_bounds=[0.0] * 30,
+            upper_bounds=[1.0] * 30,
+            crossover_probability=0.9,
+            mutation_probability=1.0 / 30,
+            eta_c=20,
+            eta_m=20
         )
 
         population, pareto_front = algorithm.run()
