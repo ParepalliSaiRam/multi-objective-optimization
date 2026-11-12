@@ -1,0 +1,12 @@
+This is an example to use CEC2020 MMO test problem suite.
+Run "main.m " 
+
+
+Please refer to the following references for details.
+
+J. J. Liang, P. N. Suganthan, B. Y. Qu, D. W. Gong, and C. T. Yue, Problem Definitions and Evaluation Criteria for the CEC 2020 Special Session on Multimodal Multiobjective Optimization, Zhengzhou University 2020.
+C. T. Yue, B. Y. Qu, K. J. Yu, J. J. Liang, and X. Li, A Novel Scalable Test Problem Suite for Multimodal Multiobjective Optimization, Swarm and Evolutionary Computation, vol. 48, no. 2019, pp. 62-71, 2019.
+J. J. Liang, C. T. Yue, and B. Y. Qu, Multimodal multi-objective optimization: A preliminary study, IEEE Congress on Evolutionary Computation 2016, pp. 2454-2461, 2016.
+C. T. Yue, B. Y. Qu, and J. J. Liang, A Multiobjective Particle Swarm Optimizer Using Ring Topology for Solving Multimodal Multiobjective Problems, IEEE Transactions on Evolutionary Computation, vol. 22, no. 5, pp. 805-817, 2018.
+
+Any question, please contact zzuyuecaitong@163.com liangjing@zzu.edu.cn or epnsugan@ntu.edu.sg.

@@ -1,0 +1,19 @@
+{
+  "strategy": "DE/rand/1/bin",
+  "population_size": 100,
+  "parameter_ranges": {
+    "population_size": "integer in [4, MaxFES]",
+    "differential_weight": "(0, 2]",
+    "crossover_rate": "[0, 1]"
+  },
+  "differential_weight": 0.5,
+  "crossover_rate": 0.9,
+  "adjustment_guideline": "change population_size, F, or CR only as a shared setting after general tuning; do not tune by function or dimension",
+  "parameter_tuning_cost_fes": 0,
+  "initialization": "uniform within bounds",
+  "boundary_repair": "clip to bounds",
+  "selection": "greedy one-to-one",
+  "encoding": "real-valued vectors; no separate encoding",
+  "random_generator": "NumPy default_rng (PCG64), seeded by the official CEC numeric seed",
+  "tuning": "none; one shared configuration for all functions and dimensions"
+}

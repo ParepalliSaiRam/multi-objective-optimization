@@ -1,7 +1,6 @@
 import csv
 import os
 
-
 def save_results(
     results,
     filename="results/data/results.csv"

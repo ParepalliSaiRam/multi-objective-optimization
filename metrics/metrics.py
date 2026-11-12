@@ -22,40 +22,32 @@ def hypervolume_2d(points, reference_point):
     if not points:
         return 0.0
 
-    # Remove points that are outside the reference point.
-    filtered_points = [
-        point
-        for point in points
-        if point[0] <= reference_point[0]
-        and point[1] <= reference_point[1]
-    ]
+    return hypervolume(points, reference_point)
 
-    if not filtered_points:
+
+def hypervolume(points, reference_point):
+    """Exact dominated hypervolume for minimization fronts of any dimension."""
+    if not points:
+        return 0.0
+    dimension = len(reference_point)
+    front = [tuple(p) for p in points if len(p) == dimension and all(p[i] < reference_point[i] for i in range(dimension))]
+    if not front:
         return 0.0
 
-    # Sort by first objective in ascending order.
-    sorted_points = sorted(
-        filtered_points,
-        key=lambda point: point[0]
-    )
+    def recurse(rows, ref, dims):
+        if not rows:
+            return 0.0
+        if dims == 1:
+            return max(0.0, ref[0] - min(row[0] for row in rows))
+        coords = sorted({row[0] for row in rows if row[0] < ref[0]})
+        volume = 0.0
+        for index, coordinate in enumerate(coords):
+            next_coordinate = coords[index + 1] if index + 1 < len(coords) else ref[0]
+            active = [row[1:] for row in rows if row[0] <= coordinate]
+            volume += max(0.0, next_coordinate - coordinate) * recurse(active, ref[1:], dims - 1)
+        return volume
 
-    hypervolume = 0.0
-
-    previous_f1 = reference_point[0]
-
-    # For minimization:
-    # move from the worst f1 toward the best f1.
-    for f1, f2 in reversed(sorted_points):
-
-        width = previous_f1 - f1
-        height = reference_point[1] - f2
-
-        if width > 0 and height > 0:
-            hypervolume += width * height
-
-        previous_f1 = f1
-
-    return hypervolume
+    return recurse(front, tuple(reference_point), dimension)
 
 def igd(obtained_points, true_front):
     """

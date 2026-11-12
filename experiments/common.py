@@ -4,7 +4,7 @@ import statistics
 import csv
 
 from metrics import (
-    hypervolume_2d,
+    hypervolume,
     igd,
     gd,
     spacing
@@ -83,7 +83,8 @@ def run_algorithm(
     bounds_function,
     pareto_front_function,
     benchmark_name,
-    seed
+    seed,
+    constraint_violation_function=None,
 ):
 
     # Reproducibility
@@ -102,6 +103,7 @@ def run_algorithm(
         objective_function=objective_function,
         lower_bounds=lower_bounds,
         upper_bounds=upper_bounds,
+        constraint_violation_function=constraint_violation_function,
         **algorithm_parameters
     )
 
@@ -119,24 +121,32 @@ def run_algorithm(
         individual.objectives
         for individual in pareto_front
     ]
+    obtained_decisions = [
+        individual.variables
+        for individual in pareto_front
+    ]
 
-    # True Pareto front
+    # Normalize the reference front to a list of objective vectors.
     true_front = pareto_front_function()
-
-    true_points = []
-
-    for true_f1, true_f2 in true_front:
-        for i in range(len(true_f1)):
-            true_points.append(
-                [true_f1[i], true_f2[i]]
+    if hasattr(true_front, "ndim") and true_front.ndim == 2:
+        true_points = true_front.tolist()
+    else:
+        true_points = []
+        for segment_f1, segment_f2 in true_front:
+            true_points.extend(
+                [[float(f1), float(f2)] for f1, f2 in zip(segment_f1, segment_f2)]
             )
 
     # Metrics
-    reference_point = ZDT_REFERENCE_POINTS[
-        benchmark_name
-    ]
+    reference_point = ZDT_REFERENCE_POINTS.get(benchmark_name)
+    if reference_point is None:
+        reference_point = [
+            max(point[i] for point in true_points)
+            + max(0.1 * (max(row[i] for row in true_points) - min(row[i] for row in true_points)), 1e-6)
+            for i in range(len(true_points[0]))
+        ]
 
-    hv_value = hypervolume_2d(
+    hv_value = hypervolume(
         obtained_points,
         reference_point
     )
@@ -160,7 +170,9 @@ def run_algorithm(
         igd_value,
         gd_value,
         spacing_value,
-        runtime
+        runtime,
+        obtained_points,
+        obtained_decisions,
     )
 
 def run_multiple(
@@ -171,7 +183,8 @@ def run_multiple(
     pareto_front_function,
     benchmark_name,
     algorithm_name,
-    number_of_runs=3
+    number_of_runs=3,
+    constraint_violation_function=None,
 ):
 
     hypervolumes = []
@@ -181,18 +194,24 @@ def run_multiple(
     runtimes = []
 
     run_results = []
+    obtained_fronts = []
+    obtained_sets = []
 
     for seed in range(1, number_of_runs + 1):
 
-        hv, igd_value, gd_value, spacing_value, runtime = run_algorithm(
+        hv, igd_value, gd_value, spacing_value, runtime, obtained_points, obtained_decisions = run_algorithm(
             algorithm_class,
             algorithm_parameters,
             objective_function,
             bounds_function,
             pareto_front_function,
             benchmark_name,
-            seed
+            seed,
+            constraint_violation_function,
         )
+
+        obtained_fronts.append(obtained_points)
+        obtained_sets.append(obtained_decisions)
 
         run_results.append({
             "benchmark": benchmark_name,
@@ -238,6 +257,8 @@ def run_multiple(
     
     return {
         "runs": run_results,
+        "obtained_fronts": obtained_fronts,
+        "obtained_sets": obtained_sets,
 
         "hv_mean": statistics.mean(hypervolumes),
         "hv_std": statistics.stdev(hypervolumes)

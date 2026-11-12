@@ -1,8 +1,8 @@
 import unittest
 
-from algorithms.nsga2.individual import Individual
-from algorithms.nsga2.sorting import dominates
-from algorithms.nsga2.sorting import fast_non_dominated_sort
+from nsga2.individual import Individual
+from nsga2.sorting import dominates
+from nsga2.sorting import fast_non_dominated_sort
 
 
 class TestDominance(unittest.TestCase):

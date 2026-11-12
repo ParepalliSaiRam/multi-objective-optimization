@@ -1,10 +1,10 @@
 import unittest
 
-from algorithms.nsga2 import NSGA2
+from nsga2 import NSGA2
 from benchmarks.zdt import zdt1, zdt1_bounds
-from algorithms.nsga2.individual import Individual
-from algorithms.nsga2.operators import sbx_crossover
-from algorithms.nsga2.operators import polynomial_mutation
+from nsga2.individual import Individual
+from nsga2.operators import sbx_crossover
+from nsga2.operators import polynomial_mutation
 
 
 class TestNSGA2(unittest.TestCase):

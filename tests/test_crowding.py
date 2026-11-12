@@ -1,7 +1,7 @@
 import unittest
 
-from algorithms.nsga2.individual import Individual
-from algorithms.nsga2.sorting import calculate_crowding_distance
+from nsga2.individual import Individual
+from nsga2.sorting import calculate_crowding_distance
 
 
 class TestCrowdingDistance(unittest.TestCase):
